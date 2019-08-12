@@ -1,0 +1,7 @@
+= nng-loadtest
+
+This is a simple utility for testing NNG parallel scalability.
+Run with no options for help.
+
+In general, this utility is intended for experimental purpose only,
+and is entirely unsupported.
