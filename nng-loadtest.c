@@ -107,6 +107,18 @@ server(const char *url, int count)
 		fprintf(stderr, "rep0_open: %s\n", nng_strerror(rv));
 		exit(1);
 	}
+
+	// Supply a TLS certificate and key file.  We use a self
+	// signed cert for this demo.
+	nng_setopt_string(sock, NNG_OPT_TLS_CERT_KEY_FILE, "key.key");
+
+	// If we want client auth, then need to enable it by the following.
+	// nng_setopt_int(sock, NNG_OPT_TLS_AUTH_MODE,
+	// NNG_OPT_TLS_AUTH_MODE_REQUIRED);
+
+	// Also set the CA cert for peers we will accept.
+	// nng_setopt_string(sock, NNG_OPT_TLS_CA_FILE, "cacert.pem");
+
 	if ((rv = nng_listen(sock, url, NULL, 0)) != 0) {
 		fprintf(stderr, "listen: %s\n", nng_strerror(rv));
 		exit(1);
@@ -218,6 +230,15 @@ client(const char *url, int count, int delay)
 		fprintf(stderr, "req0_open: %s\n", nng_strerror(rv));
 		exit(1);
 	}
+
+	// The name of a file containing certificates corresponding
+	// to servers (or CAs that have signed server certs).
+	nng_setopt_string(sock, NNG_OPT_TLS_CA_FILE, "cert.crt");
+
+	// If we wanted to use client auth, we would set the following,
+	// and it would be a file containing PEM blocks for both our
+	// client key, and the certificate for said client.
+	// nng_setopt_string(sock, NNG_OPT_TLS_CERT_KEY_FILE, "client.pem");
 
 	// Create <count> worker contexts.
 	for (int i = 0; i < count; i++) {
